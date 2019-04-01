@@ -1,0 +1,53 @@
+#!/usr/bin/env bash
+
+configs=(
+    "bash/.bashrc"
+    "bash/.bash_aliases"
+    "emacs/.emacs.d/init.el"
+    "emacs/.emacs.d/functions.el"
+    "tmux/.tmux.conf"
+    "vim/.vimrc"
+    )
+
+scripts=(./scripts/*)
+
+#
+# Link configs
+#
+for config in "${configs[@]}"
+do
+    trimmedConfig=$(echo $config | sed 's/^[^.\/]*\///g')
+
+    if [ -L "$HOME/$trimmedConfig" ]; then
+    	echo "$HOME/$trimmedConfig is already a symlink"
+	continue
+    fi
+
+    if [ -f "$HOME/$trimmedConfig" ]; then
+    	echo "Backing up $HOME/$trimmedConfig to $HOME/$trimmedConfig.bak"
+    	mv $HOME/$trimmedConfig $HOME/$trimmedConfig.bak
+    fi
+
+    echo "Linking $HOME/$trimmedConfig to ./configs/$config"
+    ln -s $(pwd)/configs/$config $HOME/$trimmedConfig
+done
+
+#
+# Link scripts
+#
+if [ ! -d /usr/local/bin/scripts ]; then
+    sudo mkdir /usr/local/bin/scripts
+fi
+
+for script in "${scripts[@]}"
+do
+    trimmedScript=$(echo $script | sed 's/.\/scripts\///g')
+
+    if [ -L /usr/local/bin/scripts/$trimmedScript ]; then
+    	echo "/usr/local/bin/scripts/$trimmedScript is already a symlink"
+	continue
+    fi
+
+    echo "Linking /usr/local/bin/scripts/$trimmedScript to ./scripts/$trimmedScript"
+    sudo ln -s $(pwd)/scripts/$trimmedScript /usr/local/bin/scripts/$trimmedScript
+done

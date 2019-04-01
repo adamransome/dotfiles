@@ -1,0 +1,34 @@
+#!/usr/bin/env python3
+#
+# Clones all Gitlab repos for the given user
+#
+
+import os
+import requests
+import json
+
+GITLAB_USERNAME = os.environ['gitlab_username']
+GITLAB_API_KEY = os.environ['gitlab_api_key']
+REPO_DIR = "/tmp"
+
+def get_repository_list():
+    repos = []
+    response = requests.get(f"https://gitlab.com/api/v4/users/{GITLAB_USERNAME}/projects?private_token={GITLAB_API_KEY}")
+
+    for repo in response.json():
+        repos.append(repo["ssh_url_to_repo"])
+
+    return repos
+
+def clone_repositories(repositories=[]):
+    os.chdir(REPO_DIR)
+
+    for repository in repositories:
+        os.system("git clone " + repository)
+
+def main():
+    clone_repositories(get_repository_list())
+
+
+if __name__ == '__main__':
+    main()
