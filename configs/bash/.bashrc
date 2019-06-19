@@ -10,6 +10,9 @@ export PATH=/usr/local/bin/scripts:$PATH
 export PATH=$HOME/.local/bin:$PATH
 export PATH=$HOME/bin:$PATH
 export PATH=$HOME/.config/composer/vendor/bin:$PATH
+export PATH=/usr/local/go/bin:$PATH
+export GOPATH=$HOME/workspace/code/go
+export PATH=$PATH:$GOPATH/bin
 export EDITOR=vim
 
 if [ -n "$TMUX" ]; then
